@@ -6,14 +6,17 @@ module ActiveAdminMultiUpload::Uploadable
   end
 
   module ClassMethods
-    def allows_upload(name)
+    def allows_upload(name, *args)
+      options = args.extract_options!
+      attribute_name = options[:attribute] || :file
+      version_name_for_admin = options[:version] || :thumb
       code = <<-eoruby
         def to_jq_upload
           {
             "name" => read_attribute(#{name}),
-            "size" => image.size,
-            "url" => image.url,
-            "thumbnail_url" => image.thumb.url,
+            "size" => #{attribute_name}.size,
+            "url" => #{attribute_name}.url,
+            "thumbnail_url" => #{attribute_name}.#{version_name_for_admin}.url,
             "delete_url" => destroy_upload_admin_#{self.name.underscore}_url(self, only_path: true),
             "id" => id,
             "delete_type" => "DELETE"
