@@ -5,7 +5,8 @@ module ActiveAdminMultiUpload
 
       config.resource_class.send(:include, ::ActiveAdminMultiUpload::Uploadable)
       uploader = options[:mounted_uploader] ||= :image
-      config.resource_class.send(:allows_upload,  uploader)
+      delete_url_method_name = options[:delete_url_method_name]
+      config.resource_class.send(:allows_upload,  uploader, delete_url_method_name: delete_url_method_name)
 
       collection_action :create_upload, method: :post do
         @upload_model = options[:model] ||= active_admin_config.resource_class

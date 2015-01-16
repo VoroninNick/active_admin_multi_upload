@@ -10,6 +10,7 @@ module ActiveAdminMultiUpload::Uploadable
       options = args.extract_options!
       attribute_name = options[:attribute] || :file
       version_name_for_admin = options[:version] || :thumb
+      delete_url_method_name = options[:delete_url_method_name] || "destroy_upload_admin_#{self.name.underscore}_url"
       code = <<-eoruby
         def to_jq_upload
           {
@@ -17,7 +18,7 @@ module ActiveAdminMultiUpload::Uploadable
             "size" => #{attribute_name}.size,
             "url" => #{attribute_name}.url,
             "thumbnail_url" => #{attribute_name}.#{version_name_for_admin}.url,
-            "delete_url" => destroy_upload_admin_#{self.name.underscore}_url(self, only_path: true),
+            "delete_url" => #{delete_url_method_name}(self, only_path: true),
             "id" => id,
             "delete_type" => "DELETE"
           }
